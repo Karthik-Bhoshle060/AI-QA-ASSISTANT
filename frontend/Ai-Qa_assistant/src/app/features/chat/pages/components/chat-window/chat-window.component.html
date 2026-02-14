@@ -1,0 +1,44 @@
+<div class="main-wrapper">
+  <div class="chat-container">
+    <header class="chat-header">
+      <h2>AI Assistant</h2>
+    </header>
+
+    <div class="scroll-area" #scrollArea (scroll)="onScroll()">
+      @for (msg of messages; track msg.createdAt) {
+        <div class="message-row" [ngClass]="{'user-row': msg.role === 'user'}">
+          <div class="bubble" [ngClass]="msg.role">
+            @if (msg.role === 'assistant') {
+              <markdown [data]="msg.content" linkTarget="_blank" clipboard></markdown>
+            } @else {
+              <p>{{ msg.content }}</p>
+            }
+            <span class="timestamp">{{ msg.createdAt | date:'shortTime' }}</span>
+          </div>
+        </div>
+      }
+      
+      @if (loading) {
+        <div class="message-row">
+          <div class="bubble assistant typing">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <footer class="input-area">
+      <textarea
+        [(ngModel)]="inputText"
+        (keydown)="onEnter($event)"
+        placeholder="Type your question..."
+        rows="1"
+      ></textarea>
+      <button (click)="send()" [disabled]="loading || !inputText.trim()">
+        <span>➤</span>
+      </button>
+    </footer>
+
+   
+  </div>
+</div>
